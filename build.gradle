@@ -38,3 +38,11 @@ configurations {
 bootRepackage {
     mainClass = 'org.stevegood.Application'
 }
+
+idea {
+    module {
+            name = 'email-service'
+            sourceDirs += file('src/main/groovy')
+            testSourceDirs += file('test/main/groovy')
+        }
+}
