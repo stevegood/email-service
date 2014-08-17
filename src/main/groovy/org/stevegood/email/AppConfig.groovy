@@ -4,7 +4,7 @@ package org.stevegood.email
  * @author <a href="http://stevegood.org">Steve Good</a>
  * @since 2014-08-16
  */
-class EmailConfig {
+class AppConfig {
     String smtp
     int port
     Boolean useTls = false
