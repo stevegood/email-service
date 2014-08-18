@@ -1,18 +1,17 @@
+Email Service
+=============
 
-    ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+This is a micro-service designed to integrate with a message queue (like amqp and rabbitmq) to coordinate sending and receiving email.  It uses a nosql store to queue emails for sending and disposition (bounce, success, etc).
+
+Dependencies
+------------
+
+- Spring Boot
+- Redis
+- AMQP
 
 
-Hi there! Welcome to Cloud9 IDE!
+License
+-------
 
-To get you started, create some files, play with the terminal,
-or visit http://docs.c9.io for our documentation.
-If you want, you can also go watch some training videos at
-http://www.youtube.com/user/c9ide.
-
-Happy coding!
-The Cloud9 IDE team
+Apache v2.0
