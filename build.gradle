@@ -6,12 +6,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath 'org.cloudfoundry:cf-gradle-plugin:1.0.4'
     }
 }
 
+apply plugin: 'cloudfoundry'
 apply plugin: 'groovy'
-apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot' 
 
@@ -24,23 +25,31 @@ targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
+    maven { url "http://repo.spring.io/milestone" }
 }
 
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-groovy-templates")
-    compile("org.springframework.boot:spring-boot-starter-amqp")
-    compile("org.springframework.boot:spring-boot-starter-redis")
-    compile("org.codehaus.groovy:groovy")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-groovy-templates"
+    compile "org.springframework.boot:spring-boot-starter-amqp"
+    compile "org.codehaus.groovy:groovy"
+
+    // cloud foundry
+    compile "org.springframework.cloud:cloudfoundry-connector:0.9.5"
+    compile "org.springframework.cloud:spring-service-connector:0.9.5"
+
+    // sendgrid
+    compile 'com.sendgrid:sendgrid-java:1.2.0'
+
+    testCompile "org.springframework.boot:spring-boot-starter-test"
 }
 
-eclipse {
-    classpath {
-         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
-         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
-    }
+cloudfoundry {
+    target = 'https://api.run.pivotal.io'
+    space = 'development'
+    application = 'sgo-email-service'
+    file = new File("${jar.destinationDir}/${jar.baseName}-${jar.version}.jar")
 }
 
 task wrapper(type: Wrapper) {

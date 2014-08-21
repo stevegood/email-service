@@ -1,35 +1,71 @@
 package org.stevegood.email
 
+import groovy.util.logging.Log
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.CommandLineRunner
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.cloud.CloudFactory
+import org.springframework.cloud.service.common.SmtpServiceInfo
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.data.redis.core.ValueOperations
+import org.springframework.context.event.ContextRefreshedEvent
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 
+@Log
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-class Application implements CommandLineRunner {
+@EnableScheduling
+class Application implements ApplicationListener<ContextRefreshedEvent> {
 
+    @Autowired
+    AppConfig config
     @Autowired
     EmailService emailService
-    @Autowired
-    private StringRedisTemplate template
 
-    @Override
-    public void run(String... args) {
-        ValueOperations<String, String> ops = template.opsForValue()
-        String key = 'spring.boot.redis.test'
-        if (!template.hasKey(key)) {
-            ops.set(key, 'foo')
-        }
-        println "Found key $key, value=${ops.get(key)}"
-    }
+    @Value('${cf.sendmail.service.name}')
+    String sendmailServiceName
 
     static void main(String[] args) {
         SpringApplication.run Application, args
+    }
+
+    void onApplicationEvent(ContextRefreshedEvent e) {
+        log.info 'Checking for Cloud Foundry config and setting values in config'
+        def cloud
+        try {
+            cloud = new CloudFactory().cloud
+        } catch(ex) {}
+
+        if (cloud) {
+            SmtpServiceInfo mailInfo = cloud.getServiceInfo(sendmailServiceName)
+            config.smtp = mailInfo.host
+            config.username = mailInfo.userName
+            config.password = mailInfo.password
+            emailService.mailWrapper = new SendGridWrapper(config)
+        } else {
+            emailService.mailWrapper = new JavaMailWrapper(config)
+        }
+
+        log.info 'Sending startup email'
+        def email = new Email(
+                to: config.serverAdmins.split(';'),
+                from: 'alerts@stevegood.org',
+                subject: 'Email service started',
+                body: "The email service finished starting up at ${new Date()}."
+        )
+        emailService.queueEmail(email)
+    }
+
+    @Scheduled(fixedRate = 5000L)
+    void processQueueTask() {
+        if (!emailService.processing && emailService.queueSize) {
+            log.info "Starting to process email queue (${emailService.queueSize} messages)"
+            emailService.processQueue()
+            log.info 'Finished processing queue.'
+        }
     }
 }
