@@ -1,15 +1,14 @@
 Email Service
 =============
 
-This is a micro-service designed to integrate with a message queue (like amqp and rabbitmq) to coordinate sending and receiving email.  It uses a nosql store to queue emails for sending and disposition (bounce, success, etc).  It is expected that this service will run in a Cloud Foundry environment.
+This is a micro-service designed to integrate with a message queue (rabbitmq) to coordinate sending and receiving email.  It uses an in-memory queue emails for sending and disposition (bounce, success, etc).  It is expected that this service will run in a CloudFoundry environment.
 
 Dependencies
 ------------
 
 - [Spring Boot](http://projects.spring.io/spring-boot/)
-- [Redis](http://redis.io/)
 - [AMQP](http://www.amqp.org/)
-- [Cloud Foundry](http://cloudfoundry.org/index.html)
+- [CloudFoundry](http://cloudfoundry.org/index.html)
 
 
 License
