@@ -3,6 +3,11 @@ Email Service
 
 This is a micro-service designed to integrate with a message queue (rabbitmq) to coordinate sending and receiving email.  It uses an in-memory queue emails for sending and disposition (bounce, success, etc).  It is expected that this service will run in a CloudFoundry environment.
 
+Status
+------
+
+[![Codeship Status for stevegood/blog](https://codeship.io/projects/201cae00-1931-0132-3deb-469181d2b293/status)](https://codeship.io/projects/34337)
+
 Dependencies
 ------------
 
