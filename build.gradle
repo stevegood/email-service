@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.1.5.RELEASE'
+        springBootVersion = '1.1.6.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -19,7 +19,9 @@ apply plugin: 'spring-boot'
 jar {
     baseName = 'email-service'
     version =  '0.0.1-SNAPSHOT'
+    archiveName = "${baseName}.jar"
 }
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -33,6 +35,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.springframework.boot:spring-boot-starter-groovy-templates"
     compile "org.springframework.boot:spring-boot-starter-amqp"
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile "org.codehaus.groovy:groovy"
 
     // cloud foundry
@@ -43,13 +46,6 @@ dependencies {
     compile 'com.sendgrid:sendgrid-java:1.2.0'
 
     testCompile "org.springframework.boot:spring-boot-starter-test"
-}
-
-cloudfoundry {
-    target = 'https://api.run.pivotal.io'
-    space = 'development'
-    application = 'sgo-email-service'
-    file = new File("${jar.destinationDir}/${jar.baseName}-${jar.version}.jar")
 }
 
 task wrapper(type: Wrapper) {
