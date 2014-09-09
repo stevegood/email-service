@@ -6,7 +6,7 @@ This is a micro-service designed to integrate with a message queue (rabbitmq) to
 Status
 ------
 
-[![Codeship Status for stevegood/blog](https://codeship.io/projects/201cae00-1931-0132-3deb-469181d2b293/status)](https://codeship.io/projects/34337)
+[![Build Status](https://travis-ci.org/stevegood/email-service.svg?branch=master)](https://travis-ci.org/stevegood/email-service)
 
 Dependencies
 ------------
